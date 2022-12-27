@@ -1,0 +1,19 @@
+"Ping-pong"
+from pygame import *
+from random import randint
+from time import time as timer
+
+window = display.set_mode((700, 500))
+display.set_caption('Shooter')
+BG = transform.scale(image.load('BG.jpg'), (700, 500))
+
+clock = time.Clock()
+Game = True
+
+while Game:
+    for e in event.get():
+            if e.type == QUIT:
+                Game = False
+    window.blit(BG, (0, 0))
+    display.update()
+    clock.tick(60)
