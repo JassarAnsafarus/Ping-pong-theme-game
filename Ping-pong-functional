@@ -1,0 +1,90 @@
+"Ping-pong"
+from pygame import *
+from random import randint
+from time import time as timer
+
+window = display.set_mode((1000, 700))
+display.set_caption('Shooter')
+BG = transform.scale(image.load('BG.jpg'), (1000, 700))
+d
+speed_x = 15
+speed_y = 5
+class GameSprite(sprite.Sprite):
+    def __init__(self, player_image, player_x, player_y, player_speed, image_x, image_y):
+        super().__init__()
+        self.image = transform.scale(image.load(player_image), (image_x, image_y))
+        self.speed = player_speed
+        self.rect = self.image.get_rect()
+        self.rect.x = player_x
+        self.rect.y = player_y
+
+    def reset(self):
+        window.blit(self.image, (self.rect.x, self.rect.y))
+
+class Player(GameSprite):
+    def update(self):
+        key_pressed = key.get_pressed()
+        if key_pressed[K_UP] and self.rect.y > 5:
+            self.rect.y -= self.speed
+        if key_pressed[K_DOWN] and self.rect.y < 655:
+            self.rect.y += self.speed
+    def update2(self):
+        key_pressed = key.get_pressed()
+        if key_pressed[K_e] and self.rect.y > 5:
+            self.rect.y -= self.speed
+        if key_pressed[K_d] and self.rect.y < 655:
+            self.rect.y += self.speed
+    
+        
+
+class Ball(GameSprite):
+    def update(self):
+        pass
+        
+
+Rocket1 = Player('platform_scaled1.png', 30, 450, 18, 40, 200)
+Rocket2 = Player('platform_scaled2.png', 970, 450, 18, 40, 200)
+Tennis_ball = Ball('ball.png', 487, 337, 5, 60, 60)
+
+clock = time.Clock()
+finish = False
+Game = True
+font.init()
+font = font.SysFont('Roboto', 80, bold = 3, italic = True)
+
+win1_text = font.render('Левые выиграли!', True, (255, 0, 255))
+win2_text = font.render('Правые выиграли!', True, (255, 0, 255))
+while Game:
+    for e in event.get():
+                if e.type == QUIT:
+                    Game = False
+    if not finish:
+        window.blit(BG, (0, 0))
+        Rocket1.reset()
+        Rocket2.reset()
+        Rocket1.update2()
+        Rocket2.update()
+        Tennis_ball.reset()
+
+        Tennis_ball.rect.x += speed_x
+        Tennis_ball.rect.y += speed_y
+        if Tennis_ball.rect.y < 0:
+            speed_y *= -1
+        if sprite.collide_rect(Tennis_ball, Rocket1) or sprite.collide_rect(Tennis_ball, Rocket2):
+            speed_x *= -1
+        if Tennis_ball.rect.y > 640:
+            speed_y *= -1
+
+        if Tennis_ball.rect.x < 0:
+            window.blit(win1_text, (200, 300))
+            finish = True
+        
+        if Tennis_ball.rect.x > 1000:
+            window.blit(win1_text, (200, 300))
+            finish = True
+
+
+        
+
+    display.update()
+    clock.tick(60)
